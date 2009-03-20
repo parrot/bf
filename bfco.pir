@@ -68,7 +68,7 @@ SOURCE_LOOP:
 
   # The main compiler loop
 INTERP:
-  substr_r char, file, pc, 1
+  substr char, file, pc, 1
   concat code,  "\nSTEP"
   labelstr = pc
   concat code,  labelstr
@@ -83,7 +83,7 @@ INTERP:
 plus_loop:
   inc n_plus
   if $I0 == maxpc goto emit_plus
-  substr_r char, file, $I0, 1
+  substr char, file, $I0, 1
   if char != "+" goto emit_plus
   inc $I0
   goto plus_loop
@@ -109,7 +109,7 @@ NOTPLUS:
 minus_loop:
   inc n_minus
   if $I0 == maxpc goto emit_minus
-  substr_r char, file, $I0, 1
+  substr char, file, $I0, 1
   if char != "-" goto emit_minus
   inc $I0
   goto minus_loop
@@ -135,7 +135,7 @@ NOTMINUS:
 gt_loop:
   inc n_gt
   if $I0 == maxpc goto emit_gt
-  substr_r char, file, $I0, 1
+  substr char, file, $I0, 1
   if char != ">" goto emit_gt
   inc $I0
   goto gt_loop
@@ -152,7 +152,7 @@ NOTGT:
 lt_loop:
   inc n_lt
   if $I0 == maxpc goto emit_lt
-  substr_r char, file, $I0, 1
+  substr char, file, $I0, 1
   if char != "<" goto emit_lt
   inc $I0
   goto lt_loop

@@ -7,6 +7,16 @@
 # XXX does no register range checking
 # it runs the bench.bf 15 times faster then bfc.imc
 
+.macro debug()
+  concat code, "# depth "
+  $S0 = depth
+  concat code, $S0
+  concat code, " reg "
+  $S0 = reg
+  concat code, $S0
+  concat code, "\n"
+.endm
+
 .sub main :main
   .param pmc argv
 
@@ -141,7 +151,7 @@ gt_loop:
   goto gt_loop
 emit_gt:
   reg += n_gt
-  bsr debug
+  .debug()
   pc = $I0 - 1
   goto NEXT
 
@@ -158,7 +168,7 @@ lt_loop:
   goto lt_loop
 emit_lt:
   reg -= n_lt
-  bsr debug
+  .debug()
   pc = $I0 - 1
   goto NEXT
 
@@ -264,17 +274,6 @@ NEXT:
   $P0 = $P1( code )
   $P0()
   end
-
-debug:
-  ret
-  concat code, "# depth "
-  $S0 = depth
-  concat code, $S0
-  concat code, " reg "
-  $S0 = reg
-  concat code, $S0
-  concat code, "\n"
-  ret
 .end
 
 # Local Variables:

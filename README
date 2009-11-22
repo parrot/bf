@@ -2,16 +2,16 @@ DESCRIPTION
 
 This is a Brainfuck interpreter for Parrot. Brainfuck is a full
 computer programming language with only eight commands. For more
-information, see http://www.catseye.mb.ca/esoteric/bf/ or 
+information, see http://www.catseye.mb.ca/esoteric/bf/ or
 http://en.wikipedia.org/wiki/Brainfuck.
 
 To compile the files:
 
-  $ make
+  $ parrot setup.pir
 
 To check that the compiler is working:
 
-  $ make test
+  $ parrot setup.pir test
 
 To run an example Brainfuck program:
 

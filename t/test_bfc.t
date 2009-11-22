@@ -3,4 +3,8 @@
 # Test bf interpreter
 # Print TAP, Test Anything Protocol
 
-system( "../parrot -r bf/bfc.pbc bf/test.bf" );
+.sub 'main' :main
+    $S0 = 'parrot -r bfc.pbc test.bf'
+    $I0 = spawnw $S0
+.end
+

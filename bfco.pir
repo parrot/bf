@@ -67,7 +67,7 @@ SOURCE_LOOP:
   # this array doesn't support negative indices properly
   # start with some offset
   concat code,  "getstdout P30\n"
-  concat code,  "pop S0, P30\n        # unbuffer\n"
+  concat code,  "#pop S0, P30\n        # unbuffer\n"
   concat code,  "getstdin P30\n"
 
   pc    = 0    # pc

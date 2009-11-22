@@ -49,12 +49,12 @@ SOURCE_LOOP:
   # Initialise
   code =      "set I0, 0          # pc\n"
   # concat code, "trace 1\n"
-  concat code,  "new P0, .ResizableIntegerArray # memory\n"
+  concat code,  "new P0, 'ResizableIntegerArray' # memory\n"
   # this array doesn't support negative indices properly
   # start with some offset
   concat code,  "set I1, 256          # pointer\n"
   concat code,  "getstdout P30\n"
-  concat code,  "pop S0, P30\n        # unbuffer\n"
+  concat code,  "#pop S0, P30\n        # unbuffer\n"
   concat code,  "getstdin P30\n"
 
   pc    = 0    # pc

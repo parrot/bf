@@ -51,6 +51,10 @@ No Configure step, no Makefile generated.
     $S0 = get_parrot()
     $P0['prove_exec'] = $S0
 
+    # dist
+    $P3 = split ' ', 'MAINTAINER README'
+    $P0['doc_files'] = $P3
+
     .tailcall setup(args :flat, $P0 :flat :named)
 .end
 

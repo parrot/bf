@@ -4,6 +4,9 @@
 #
 # See http://www.catseye.mb.ca/esoteric/bf/
 # for more information on this silly language
+
+.loadlib 'io_ops'
+
 .sub _main
   .param pmc argv
   .local int pc

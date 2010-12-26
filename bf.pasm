@@ -30,7 +30,7 @@ no_o:
   unless I0, usage
 SOURCE_LOOP:
   readline S2, P1
-  concat S1, S2
+  concat S1, S1, S2
   if S2, SOURCE_LOOP
   close P1
 

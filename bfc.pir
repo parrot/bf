@@ -13,7 +13,7 @@
   .local int maxpc
   .local int label
   .local string labelstr
-  .local string code
+  .local pmc code
   .local string filename
   .local string file
   .local string line
@@ -50,15 +50,16 @@ SOURCE_LOOP:
   length maxpc, file
 
   # Initialise
-  code =      "set I0, 0          # pc\n"
+  code = new 'StringBuilder'
+  push code, "set I0, 0          # pc\n"
   # concat code, "trace 1\n"
-  concat code,  "new P0, 'ResizableIntegerArray' # memory\n"
+  push code,  "new P0, 'ResizableIntegerArray' # memory\n"
   # this array doesn't support negative indices properly
   # start with some offset
-  concat code,  "set I1, 256          # pointer\n"
-  concat code,  "getstdout P30\n"
-  concat code,  "#pop S0, P30\n        # unbuffer\n"
-  concat code,  "getstdin P30\n"
+  push code,  "set I1, 256          # pointer\n"
+  push code,  "getstdout P30\n"
+  push code,  "#pop S0, P30\n        # unbuffer\n"
+  push code,  "getstdin P30\n"
 
   pc    = 0    # pc
   label = 0    # label count
@@ -66,12 +67,12 @@ SOURCE_LOOP:
   # The main compiler loop
 INTERP:
   substr char, file, pc, 1
-  concat code,  "\nSTEP"
+  push code,  "\nSTEP"
   labelstr = pc
-  concat code,  labelstr
-  concat code,  ": # "
-  concat code,  char
-  concat code,  "\n"
+  push code,  labelstr
+  push code,  ": # "
+  push code,  char
+  push code,  "\n"
 
   if char != "+" goto NOTPLUS
   .local int n_plus
@@ -86,13 +87,13 @@ plus_loop:
   goto plus_loop
 emit_plus:
   pc = $I0 - 1
-  concat code,  "set I2, P0[I1]\n"
-  concat code,  "add I2, "
+  push code,  "set I2, P0[I1]\n"
+  push code,  "add I2, "
   $S0 = n_plus
-  concat code,  $S0
-  concat code,  "\n"
-  concat code,  "band I2, 0xff\n"
-  concat code,  "set P0[I1], I2\n"
+  push code,  $S0
+  push code,  "\n"
+  push code,  "band I2, 0xff\n"
+  push code,  "set P0[I1], I2\n"
   goto NEXT
 
 NOTPLUS:
@@ -109,13 +110,13 @@ minus_loop:
   goto minus_loop
 emit_minus:
   pc = $I0 - 1
-  concat code,  "set I2, P0[I1]\n"
-  concat code,  "sub I2, "
+  push code,  "set I2, P0[I1]\n"
+  push code,  "sub I2, "
   $S0 = n_minus
-  concat code,  $S0
-  concat code,  "\n"
-  concat code,  "band I2, 0xff\n"
-  concat code,  "set P0[I1], I2\n"
+  push code,  $S0
+  push code,  "\n"
+  push code,  "band I2, 0xff\n"
+  push code,  "set P0[I1], I2\n"
   goto NEXT
 
 NOTMINUS:
@@ -132,10 +133,10 @@ gt_loop:
   goto gt_loop
 emit_gt:
   pc = $I0 - 1
-  concat code,  "add I1, "
+  push code,  "add I1, "
   $S0 = n_gt
-  concat code,  $S0
-  concat code,  "\n"
+  push code,  $S0
+  push code,  "\n"
   goto NEXT
 
 NOTGT:
@@ -152,10 +153,10 @@ lt_loop:
   goto lt_loop
 emit_lt:
   pc = $I0 - 1
-  concat code,  "sub I1, "
+  push code,  "sub I1, "
   $S0 = n_lt
-  concat code,  $S0
-  concat code,  "\n"
+  push code,  $S0
+  push code,  "\n"
   goto NEXT
 
 NOTLT:
@@ -178,10 +179,10 @@ OPEN_NOTOPEN:
 OPEN_NEXT:
   inc label
   labelstr = label
-  concat code,  "set I2, P0[I1]\n"
-  concat code,  "unless I2, STEP"
-  concat code,  labelstr
-  concat code,  "\n"
+  push code,  "set I2, P0[I1]\n"
+  push code,  "unless I2, STEP"
+  push code,  labelstr
+  push code,  "\n"
 
   goto NEXT
 
@@ -205,38 +206,38 @@ CLOSE_NOTCLOSE:
 
 CLOSE_NEXT:
   labelstr = label
-  concat code,  "branch STEP"
-  concat code,  labelstr
-  concat code,  "\n"
+  push code,  "branch STEP"
+  push code,  labelstr
+  push code,  "\n"
 
   goto NEXT
 
 NOTCLOSE:
   if char != "." goto NOTDOT
-  concat code,  "set I2, P0[I1]\n"
-  concat code,  "chr S31, I2\n"
-  concat code,  "print S31\n"
+  push code,  "set I2, P0[I1]\n"
+  push code,  "chr S31, I2\n"
+  push code,  "print S31\n"
   goto NEXT
 
 NOTDOT:
   if char != "," goto NEXT
   labelstr = pc
-  concat code,  "read S31, P30, 1\n"
-  concat code,  "if S31, no_eof"
-  concat code,  labelstr
-  concat code,  "\n"
-  concat code,  "null I2\n"
-  concat code,  "branch eof"
-  concat code,  labelstr
-  concat code,  "\n"
-  concat code,  "no_eof"
-  concat code,  labelstr
-  concat code,  ":\n"
-  concat code,  "ord I2, S31\n"
-  concat code,  "eof"
-  concat code,  labelstr
-  concat code,  ":\n"
-  concat code,  "set P0[I1], I2\n"
+  push code,  "read S31, P30, 1\n"
+  push code,  "if S31, no_eof"
+  push code,  labelstr
+  push code,  "\n"
+  push code,  "null I2\n"
+  push code,  "branch eof"
+  push code,  labelstr
+  push code,  "\n"
+  push code,  "no_eof"
+  push code,  labelstr
+  push code,  ":\n"
+  push code,  "ord I2, S31\n"
+  push code,  "eof"
+  push code,  labelstr
+  push code,  ":\n"
+  push code,  "set P0[I1], I2\n"
   goto NEXT
 
 NEXT:
@@ -244,10 +245,10 @@ NEXT:
 
   if pc < maxpc goto INTERP
   labelstr = pc
-  concat code,  "STEP"
-  concat code,  labelstr
-  concat code,  ":\n"
-  concat code,  "end\n"
+  push code,  "STEP"
+  push code,  labelstr
+  push code,  ":\n"
+  push code,  "end\n"
 
   # printerr code
   # printerr "\n"
